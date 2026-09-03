@@ -16,12 +16,16 @@ public class CardService {
     private final CardRepository cardRepository;
     private final ColumnService columnService;
 
+    private final BoardService boardService;
+
     public CardService(
             CardRepository cardRepository,
-            ColumnService columnService
+            ColumnService columnService,
+            BoardService boardService
     ) {
         this.cardRepository = cardRepository;
         this.columnService = columnService;
+        this.boardService = boardService;
     }
 
     public Card create(
@@ -110,6 +114,52 @@ public class CardService {
         );
 
         cardRepository.delete(card);
+    }
+
+
+    public Card update(
+            String cardId,
+            String boardId,
+            String currentColumnId,
+            String newColumnId,
+            String title,
+            String description,
+            Integer position,
+            Instant dueDate,
+            String ownerId
+    ) {
+
+        // Garante que o Board pertence ao usuário autenticado.
+        boardService.findByIdAndOwnerId(boardId, ownerId);
+
+        // Garante que a coluna atual pertence ao Board.
+        columnService.findByIdAndBoardId(
+                currentColumnId,
+                boardId,
+                ownerId
+        );
+
+        // Garante que a coluna de destino também pertence ao mesmo Board.
+        columnService.findByIdAndBoardId(
+                newColumnId,
+                boardId,
+                ownerId
+        );
+
+        Card card = findByIdAndColumnId(
+                cardId,
+                boardId,
+                currentColumnId,
+                ownerId
+        );
+
+        card.setColumnId(newColumnId);
+        card.setTitle(title);
+        card.setDescription(description);
+        card.setPosition(position);
+        card.setDueDate(dueDate);
+
+        return cardRepository.save(card);
     }
 
 }

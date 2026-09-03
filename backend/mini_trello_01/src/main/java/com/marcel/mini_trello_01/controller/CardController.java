@@ -18,6 +18,8 @@ import com.marcel.mini_trello_01.service.CardService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 
+import org.springframework.web.bind.annotation.PutMapping;
+
 @RestController
 @RequestMapping("/api/boards/{boardId}/columns/{columnId}/cards")
 public class CardController {
@@ -140,6 +142,47 @@ public class CardController {
         );
 
         return ResponseEntity.noContent().build();
+    }
+
+    // PUT /api/boards/{boardId}/columns/{columnId}/cards/{cardId}
+    @PutMapping("/{cardId}")
+    public ResponseEntity<Card> update(
+            @PathVariable String boardId,
+            @PathVariable String columnId,
+            @PathVariable String cardId,
+            @RequestBody UpdateCardRequest request,
+            Authentication authentication
+    ) {
+
+        String email = authentication.getName();
+
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("User not found")
+                );
+
+        Card card = cardService.update(
+                cardId,
+                boardId,
+                columnId,
+                request.columnId(),
+                request.title(),
+                request.description(),
+                request.position(),
+                request.dueDate(),
+                user.getId()
+        );
+
+        return ResponseEntity.ok(card);
+    }
+
+    public record UpdateCardRequest(
+            String columnId,
+            String title,
+            String description,
+            Integer position,
+            Instant dueDate
+    ) {
     }
 
 }

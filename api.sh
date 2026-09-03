@@ -397,3 +397,70 @@ delete_card() {
 
     echo
 }
+
+
+update_card() {
+    require_token || return 1
+
+    local board_id="$1"
+    local current_column_id="$2"
+    local card_id="$3"
+    local new_column_id="$4"
+    local title="$5"
+    local description="$6"
+    local position="$7"
+    local due_date="$8"
+
+    if [ -z "$board_id" ] || \
+       [ -z "$current_column_id" ] || \
+       [ -z "$card_id" ] || \
+       [ -z "$new_column_id" ] || \
+       [ -z "$title" ] || \
+       [ -z "$position" ]; then
+
+        echo 'Usage: update_card <boardId> <currentColumnId> <cardId> <newColumnId> "<title>" "<description>" <position> [dueDate]'
+        return 1
+    fi
+
+    local payload
+
+    if [ -n "$due_date" ]; then
+        payload=$(
+            jq -n \
+                --arg columnId "$new_column_id" \
+                --arg title "$title" \
+                --arg description "$description" \
+                --argjson position "$position" \
+                --arg dueDate "$due_date" \
+                '{
+                    columnId: $columnId,
+                    title: $title,
+                    description: $description,
+                    position: $position,
+                    dueDate: $dueDate
+                }'
+        )
+    else
+        payload=$(
+            jq -n \
+                --arg columnId "$new_column_id" \
+                --arg title "$title" \
+                --arg description "$description" \
+                --argjson position "$position" \
+                '{
+                    columnId: $columnId,
+                    title: $title,
+                    description: $description,
+                    position: $position,
+                    dueDate: null
+                }'
+        )
+    fi
+
+    curl -sS -X PUT \
+        "$API/api/boards/$board_id/columns/$current_column_id/cards/$card_id" \
+        -H "Authorization: Bearer $TOKEN" \
+        -H "Content-Type: application/json" \
+        -d "$payload" |
+        jq
+}
