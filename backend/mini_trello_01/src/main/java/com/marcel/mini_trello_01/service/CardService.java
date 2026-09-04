@@ -153,13 +153,126 @@ public class CardService {
                 ownerId
         );
 
-        card.setColumnId(newColumnId);
+        // Se o Card permanecer na mesma Column, reorganiza as posições.
+        // Caso seja movido para outra Column, atualiza a Column de destino
+        // e mantém a nova posição informada.
+        boolean sameColumn =
+                currentColumnId.equals(newColumnId);
+
         card.setTitle(title);
         card.setDescription(description);
-        card.setPosition(position);
         card.setDueDate(dueDate);
+
+        if (sameColumn) {
+            reorderWithinSameColumn(
+                    card,
+                    currentColumnId,
+                    position
+            );
+        } else {
+            int oldPosition = card.getPosition();
+
+            // Fecha o espaço deixado na Column de origem.
+            closeGapInSourceColumn(
+                    currentColumnId,
+                    oldPosition,
+                    card.getId()
+            );
+
+            // Abre espaço para o Card na Column de destino.
+            openGapInDestinationColumn(
+                    newColumnId,
+                    position
+            );
+
+            card.setColumnId(newColumnId);
+            card.setPosition(position);
+        }
 
         return cardRepository.save(card);
     }
 
+    private void reorderWithinSameColumn(
+            Card card,
+            String columnId,
+            Integer newPosition
+    ) {
+        List<Card> cards =
+                cardRepository.findByColumnIdOrderByPositionAsc(columnId);
+
+        int oldPosition = card.getPosition();
+
+        if (oldPosition < newPosition) {
+            for (Card current : cards) {
+                if (current.getId().equals(card.getId())) {
+                    continue;
+                }
+
+                if (current.getPosition() > oldPosition &&
+                        current.getPosition() <= newPosition) {
+
+                    current.setPosition(current.getPosition() - 1);
+                }
+            }
+        }
+
+        if (oldPosition > newPosition) {
+            for (Card current : cards) {
+                if (current.getId().equals(card.getId())) {
+                    continue;
+                }
+
+                if (current.getPosition() >= newPosition &&
+                        current.getPosition() < oldPosition) {
+
+                    current.setPosition(current.getPosition() + 1);
+                }
+            }
+        }
+
+        card.setPosition(newPosition);
+
+        cardRepository.saveAll(cards);
+    }
+
+    // Fecha o espaço deixado pelo Card na Column de origem.
+    // Todos os Cards posteriores sobem uma posição.
+    private void closeGapInSourceColumn(
+            String columnId,
+            Integer oldPosition,
+            String movingCardId
+    ) {
+        List<Card> cards =
+                cardRepository.findByColumnIdOrderByPositionAsc(columnId);
+
+        for (Card current : cards) {
+            if (current.getId().equals(movingCardId)) {
+                continue;
+            }
+
+            if (current.getPosition() > oldPosition) {
+                current.setPosition(current.getPosition() - 1);
+            }
+        }
+
+        cardRepository.saveAll(cards);
+    }
+
+    // Abre espaço para o Card na Column de destino.
+    // Todos os Cards a partir da nova posição descem uma posição.
+    private void openGapInDestinationColumn(
+            String columnId,
+            Integer newPosition
+    ) {
+        List<Card> cards =
+                cardRepository.findByColumnIdOrderByPositionAsc(columnId);
+
+        for (Card current : cards) {
+            if (current.getPosition() >= newPosition) {
+                current.setPosition(current.getPosition() + 1);
+            }
+        }
+        cardRepository.saveAll(cards);
+    }
+    
 }
