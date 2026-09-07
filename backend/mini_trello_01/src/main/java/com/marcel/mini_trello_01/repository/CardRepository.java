@@ -9,4 +9,6 @@ import com.marcel.mini_trello_01.model.Card;
 public interface CardRepository extends MongoRepository<Card, String> {
 
     List<Card> findByColumnIdOrderByPositionAsc(String columnId);
+
+    long countByColumnId(String columnId);
 }

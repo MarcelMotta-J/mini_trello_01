@@ -46,6 +46,21 @@ public class CardService {
                 ownerId
         );
 
+        // Valida a posição antes de qualquer reorganização dos Cards.
+        validateCreatePosition(
+                columnId,
+                position
+        );
+
+        // MOLA EMPURRA:
+        // Abre espaço na posição desejada.
+        // Todos os Cards a partir dessa posição descem uma posição.
+        // Abre espaço na posição desejada.
+        openGapInDestinationColumn(
+                columnId,
+                position
+        );
+
         Card card = Card.builder()
                 .columnId(columnId)
                 .title(title)
@@ -113,9 +128,19 @@ public class CardService {
                 ownerId
         );
 
-        cardRepository.delete(card);
-    }
+        int oldPosition = card.getPosition();
 
+        cardRepository.delete(card);
+
+        // MOLA PUXA:
+        // Fecha o espaço deixado pelo Card removido.
+        // Todos os Cards posteriores sobem uma posição.
+        closeGapInSourceColumn(
+                columnId,
+                oldPosition,
+                cardId
+        );
+    }
 
     public Card update(
             String cardId,
@@ -153,6 +178,14 @@ public class CardService {
                 ownerId
         );
 
+        // Limitador de posição.
+        // Valida antes de qualquer reorganização dos Cards.
+        validateUpdatePosition(
+                currentColumnId,
+                newColumnId,
+                position
+        );
+
         // Se o Card permanecer na mesma Column, reorganiza as posições.
         // Caso seja movido para outra Column, atualiza a Column de destino
         // e mantém a nova posição informada.
@@ -172,6 +205,9 @@ public class CardService {
         } else {
             int oldPosition = card.getPosition();
 
+            // MOLA PUXA:
+            // Fecha o espaço deixado pelo Card.
+            // Todos os Cards posteriores sobem uma posição.
             // Fecha o espaço deixado na Column de origem.
             closeGapInSourceColumn(
                     currentColumnId,
@@ -179,6 +215,9 @@ public class CardService {
                     card.getId()
             );
 
+            // MOLA EMPURRA:
+            // Abre espaço na posição desejada.
+            // Todos os Cards a partir dessa posição descem uma posição.
             // Abre espaço para o Card na Column de destino.
             openGapInDestinationColumn(
                     newColumnId,
@@ -274,5 +313,49 @@ public class CardService {
         }
         cardRepository.saveAll(cards);
     }
-    
+
+    private void validateCreatePosition(
+            String columnId,
+            Integer position
+    ) {
+
+        long count = cardRepository.countByColumnId(columnId);
+
+        if (position > count) {
+            throw new IllegalArgumentException(
+                    "Invalid position for create"
+            );
+        }
+    }
+
+    private void validateUpdatePosition(
+            String currentColumnId,
+            String newColumnId,
+            Integer position
+    ) {
+
+        boolean sameColumn =
+                currentColumnId.equals(newColumnId);
+
+        long count =
+                cardRepository.countByColumnId(newColumnId);
+
+        if (sameColumn) {
+
+            if (position >= count) {
+                throw new IllegalArgumentException(
+                        "Invalid position for update"
+                );
+            }
+
+        } else {
+
+            if (position > count) {
+                throw new IllegalArgumentException(
+                        "Invalid position for move"
+                );
+            }
+        }
+    }
+
 }

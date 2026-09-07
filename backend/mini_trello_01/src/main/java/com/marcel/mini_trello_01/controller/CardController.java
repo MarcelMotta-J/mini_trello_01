@@ -3,6 +3,7 @@ package com.marcel.mini_trello_01.controller;
 import java.time.Instant;
 import java.util.List;
 
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,10 @@ import com.marcel.mini_trello_01.service.CardService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import org.springframework.web.bind.annotation.PutMapping;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @RestController
 @RequestMapping("/api/boards/{boardId}/columns/{columnId}/cards")
@@ -39,7 +44,7 @@ public class CardController {
     public ResponseEntity<Card> create(
             @PathVariable String boardId,
             @PathVariable String columnId,
-            @RequestBody CreateCardRequest request,
+            @RequestBody @Valid CreateCardRequest request,
             Authentication authentication
     ) {
 
@@ -89,7 +94,11 @@ public class CardController {
     public record CreateCardRequest(
             String title,
             String description,
+
+            @NotNull
+            @PositiveOrZero
             Integer position,
+
             Instant dueDate
     ) {
     }
@@ -150,7 +159,7 @@ public class CardController {
             @PathVariable String boardId,
             @PathVariable String columnId,
             @PathVariable String cardId,
-            @RequestBody UpdateCardRequest request,
+            @RequestBody @Valid UpdateCardRequest request,
             Authentication authentication
     ) {
 
@@ -180,7 +189,11 @@ public class CardController {
             String columnId,
             String title,
             String description,
+
+            @NotNull
+            @PositiveOrZero
             Integer position,
+
             Instant dueDate
     ) {
     }
