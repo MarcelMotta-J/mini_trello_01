@@ -17,6 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Boards } from './boards/boards/boards';
 
+import { MatCardModule } from '@angular/material/card';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { Boards } from './boards/boards/boards';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatCardModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

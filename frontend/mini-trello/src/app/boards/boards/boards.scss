@@ -110,32 +110,38 @@
     flex-direction: column;
   }
 
+  .new-board-form {
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
 }
 
 .toggle-id-button {
-  padding: 10px 18px;
-
-  border: none;
-  border-radius: 10px;
-
   background: #ffffff;
-  color: #34328a;
 
-  font-weight: 600;
+  mat-icon {
+    margin-right: 6px;
+  }
+}
 
-  box-shadow:
-    0 4px 14px rgba(0, 0, 0, 0.08);
+.boards-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
 
-  cursor: pointer;
+.new-board-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-      0 6px 18px rgba(0, 0, 0, 0.12);
+  mat-form-field {
+    width: 280px;
   }
 }

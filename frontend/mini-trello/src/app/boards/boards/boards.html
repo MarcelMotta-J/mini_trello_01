@@ -8,9 +8,60 @@
     </p>
   </div>
 
-  <button type="button" class="toggle-id-button" (click)="toggleIds()">
+  <div class="new-board-form">
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>Novo board</mat-label>
+
+      <input matInput type="text" [formControl]="newBoardTitle" placeholder="Ex.: Angular estudos">
+
+      @if (
+      newBoardTitle.touched &&
+      newBoardTitle.hasError('required')
+      ) {
+
+      <mat-error>
+        O título é obrigatório.
+      </mat-error>
+
+      }
+
+    </mat-form-field>
+
+    <button mat-flat-button type="button" (click)="createBoard()" [disabled]="creatingBoard">
+
+      <mat-icon>
+        add
+      </mat-icon>
+
+      @if (creatingBoard) {
+      Criando...
+      } @else {
+      Criar
+      }
+
+    </button>
+
+  </div>
+
+  <button mat-stroked-button type="button" class="toggle-id-button" (click)="toggleIds()">
+
+    <mat-icon>
+      {{ showIds ? 'visibility_off' : 'visibility' }}
+    </mat-icon>
 
     {{ showIds ? 'Ocultar IDs' : 'Mostrar IDs' }}
+
+  </button>
+
+  <button mat-stroked-button type="button" (click)="logout()">
+
+    <mat-icon>
+      logout
+    </mat-icon>
+
+    Sair
 
   </button>
 
@@ -36,21 +87,29 @@
 
     @for (board of boards; track board.id) {
 
-    <article class="board-card">
+    <mat-card appearance="outlined" class="board-card">
 
-      <h2>
-        {{ board.title }}
-      </h2>
+      <mat-card-header>
 
-      @if (showIds) {
+        <mat-card-title>
+          {{ board.title }}
+        </mat-card-title>
 
-      <p class="board-id">
-        ID: {{ board.id }}
-      </p>
+      </mat-card-header>
 
-      }
+      <mat-card-content>
 
-    </article>
+        @if (showIds) {
+
+        <p class="board-id">
+          ID: {{ board.id }}
+        </p>
+
+        }
+
+      </mat-card-content>
+
+    </mat-card>
 
     }
 
@@ -59,4 +118,3 @@
   }
 
 </main>
-
