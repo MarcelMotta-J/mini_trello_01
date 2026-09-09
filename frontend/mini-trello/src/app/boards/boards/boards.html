@@ -1,0 +1,62 @@
+<header class="boards-header">
+
+  <div>
+    <h1>Meus Boards</h1>
+
+    <p>
+      Organize seus projetos e tarefas.
+    </p>
+  </div>
+
+  <button type="button" class="toggle-id-button" (click)="toggleIds()">
+
+    {{ showIds ? 'Ocultar IDs' : 'Mostrar IDs' }}
+
+  </button>
+
+</header>
+
+<main class="boards-content">
+
+  @if (boards.length === 0) {
+
+  <div class="empty-state">
+
+    <h2>Nenhum board encontrado</h2>
+
+    <p>
+      Crie seu primeiro board para começar.
+    </p>
+
+  </div>
+
+  } @else {
+
+  <div class="boards-grid">
+
+    @for (board of boards; track board.id) {
+
+    <article class="board-card">
+
+      <h2>
+        {{ board.title }}
+      </h2>
+
+      @if (showIds) {
+
+      <p class="board-id">
+        ID: {{ board.id }}
+      </p>
+
+      }
+
+    </article>
+
+    }
+
+  </div>
+
+  }
+
+</main>
+

@@ -22,7 +22,7 @@ export class Login {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService,    
+    private authService: AuthService,
     private router: Router
   ) {
 
@@ -64,6 +64,8 @@ export class Login {
           console.log('JWT salvo no localStorage');
 
           this.loading = false;
+
+          this.router.navigate(['/boards']);
         },
 
         error: error => {
