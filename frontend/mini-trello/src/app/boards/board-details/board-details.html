@@ -97,6 +97,17 @@
 
         </mat-form-field>
 
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Descrição</mat-label>
+
+          <textarea matInput rows="3" [formControl]="newCardDescriptions[column.id]"
+            placeholder="Ex.: Revisar autenticação e testes"></textarea>
+
+        </mat-form-field>
+
+
         <button mat-flat-button type="button" (click)="createCard(column.id)"
           [disabled]="creatingCardByColumn[column.id]">
 

@@ -48,6 +48,8 @@ export class BoardDetails implements OnInit {
 
   creatingCardByColumn: Record<string, boolean> = {};
 
+  newCardDescriptions: Record<string, FormControl<string>> = {};
+
   constructor(
     private route: ActivatedRoute,
     private boardService: BoardService,
@@ -115,6 +117,13 @@ export class BoardDetails implements OnInit {
                 validators: [
                   Validators.required
                 ]
+              }
+            );
+
+            this.newCardDescriptions[column.id] = new FormControl(
+              '',
+              {
+                nonNullable: true
               }
             );
 
@@ -230,6 +239,13 @@ export class BoardDetails implements OnInit {
             }
           );
 
+          this.newCardDescriptions[column.id] = new FormControl(
+            '',
+            {
+              nonNullable: true
+            }
+          );
+
           this.creatingCardByColumn[column.id] = false;
 
           this.cardsByColumn[column.id] = [];
@@ -259,9 +275,17 @@ export class BoardDetails implements OnInit {
 
   createCard(columnId: string): void {
 
-    const control = this.newCardTitles[columnId];
+    const control =
+      this.newCardTitles[columnId];
+
+    const descriptionControl =
+      this.newCardDescriptions[columnId];
 
     if (!control) {
+      return;
+    }
+
+    if (!descriptionControl) {
       return;
     }
 
@@ -275,6 +299,9 @@ export class BoardDetails implements OnInit {
     }
 
     const title = control.value.trim();
+
+    const description =
+      descriptionControl.value.trim();
 
     if (!title) {
 
@@ -301,7 +328,7 @@ export class BoardDetails implements OnInit {
 
     const request: CreateCardRequest = {
       title,
-      description: '',
+      description,
       position: nextPosition,
       dueDate: null
     };
@@ -326,6 +353,8 @@ export class BoardDetails implements OnInit {
           );
 
           control.reset();
+
+          descriptionControl.reset();
 
           this.creatingCardByColumn[columnId] = false;
 
