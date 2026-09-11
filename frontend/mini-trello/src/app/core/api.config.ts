@@ -27,6 +27,9 @@ export const API_ENDPOINTS = {
 
   BOARDS: `${API_BASE}/boards`,
 
+  BOARD: (boardId: string) =>
+  `${API_BASE}/boards/${boardId}`,
+
   COLUMNS: (boardId: string) =>
     `${API_BASE}/boards/${boardId}/columns`,
 

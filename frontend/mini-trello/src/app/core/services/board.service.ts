@@ -32,4 +32,11 @@ export class BoardService {
       request
     );
   }
+
+  findById(boardId: string): Observable<Board> {
+
+  return this.http.get<Board>(
+    API_ENDPOINTS.BOARD(boardId)
+  );
+}
 }

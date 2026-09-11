@@ -87,7 +87,7 @@
 
     @for (board of boards; track board.id) {
 
-    <mat-card appearance="outlined" class="board-card">
+    <mat-card appearance="outlined" class="board-card" (click)="openBoard(board.id)">
 
       <mat-card-header>
 

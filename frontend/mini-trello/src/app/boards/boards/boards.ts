@@ -141,4 +141,12 @@ export class Boards implements OnInit {
 
       });
   }
+
+  openBoard(boardId: string): void {
+
+    this.router.navigate([
+      '/boards',
+      boardId
+    ]);
+  }
 }

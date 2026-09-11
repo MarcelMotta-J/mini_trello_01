@@ -1,0 +1,170 @@
+<section class="board-page">
+
+  @if (board) {
+
+  <header class="board-header">
+
+    <div>
+      <h1>
+        {{ board.title }}
+      </h1>
+
+      <p class="board-id">
+        Board ID: {{ board.id }}
+      </p>
+    </div>
+
+    <button mat-stroked-button type="button" routerLink="/boards">
+      <mat-icon>
+        arrow_back
+      </mat-icon>
+
+      Voltar
+    </button>
+
+  </header>
+
+  <div class="new-column-form">
+
+    <mat-form-field appearance="outline">
+
+      <mat-label>Nova coluna</mat-label>
+
+      <input matInput type="text" [formControl]="newColumnTitle" placeholder="Ex.: A Fazer">
+
+      @if (
+      newColumnTitle.touched &&
+      newColumnTitle.hasError('required')
+      ) {
+      <mat-error>
+        O título é obrigatório.
+      </mat-error>
+      }
+
+    </mat-form-field>
+
+    <button mat-flat-button type="button" (click)="createColumn()" [disabled]="creatingColumn">
+
+      <mat-icon>
+        add
+      </mat-icon>
+
+      @if (creatingColumn) {
+      Criando...
+      } @else {
+      Criar coluna
+      }
+
+    </button>
+
+  </div>
+
+  <main class="kanban">
+
+    @for (column of columns; track column.id) {
+
+    <section class="kanban-column">
+
+      <header class="column-header">
+
+        <h2>
+          {{ column.title }}
+        </h2>
+
+        <span>
+          {{ cardsByColumn[column.id].length }}
+          cards
+        </span>
+
+      </header>
+
+      <div class="new-card-form">
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Novo card</mat-label>
+
+          <input matInput type="text" [formControl]="newCardTitles[column.id]" placeholder="Ex.: Estudar Angular">
+
+          @if (
+          newCardTitles[column.id].touched &&
+          newCardTitles[column.id].hasError('required')
+          ) {
+          <mat-error>
+            O título é obrigatório.
+          </mat-error>
+          }
+
+        </mat-form-field>
+
+        <button mat-flat-button type="button" (click)="createCard(column.id)"
+          [disabled]="creatingCardByColumn[column.id]">
+
+          <mat-icon>
+            add
+          </mat-icon>
+
+          @if (creatingCardByColumn[column.id]) {
+          Criando...
+          } @else {
+          Criar card
+          }
+
+        </button>
+
+      </div>
+
+      <div class="cards-list">
+
+        @for (
+        card of cardsByColumn[column.id];
+        track card.id
+        ) {
+
+        <mat-card appearance="outlined" class="task-card">
+
+          <mat-card-header>
+
+            <mat-card-title>
+              {{ card.title }}
+            </mat-card-title>
+
+          </mat-card-header>
+
+          <mat-card-content>
+
+            @if (card.description) {
+
+            <p>
+              {{ card.description }}
+            </p>
+
+            }
+
+            <span class="card-position">
+              Position: {{ card.position }}
+            </span>
+
+          </mat-card-content>
+
+        </mat-card>
+
+        } @empty {
+
+        <p class="empty-column">
+          Nenhum card.
+        </p>
+
+        }
+
+      </div>
+
+    </section>
+
+    }
+
+  </main>
+
+  }
+
+</section>

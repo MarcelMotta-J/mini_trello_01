@@ -18,13 +18,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { Boards } from './boards/boards/boards';
 
 import { MatCardModule } from '@angular/material/card';
+import { BoardDetails } from './boards/board-details/board-details';
 
 
 @NgModule({
   declarations: [
     App,
     Login,
-    Boards
+    Boards,
+    BoardDetails
   ],
   imports: [
     BrowserModule,

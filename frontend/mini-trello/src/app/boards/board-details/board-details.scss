@@ -1,0 +1,160 @@
+.board-page {
+  min-height: 100vh;
+  padding: 32px;
+
+  background: #f7f7fc;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+
+  margin-bottom: 32px;
+
+  h1 {
+    margin: 0;
+
+    font-size: 32px;
+    color: #34328a;
+  }
+}
+
+.board-id {
+  margin: 8px 0 0;
+
+  color: #7b8194;
+  font-size: 14px;
+}
+
+.kanban {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+
+  overflow-x: auto;
+
+  padding-bottom: 24px;
+}
+
+.kanban-column {
+  flex: 0 0 320px;
+
+  padding: 18px;
+
+  border-radius: 16px;
+
+  background: #eef0f8;
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 18px;
+
+  h2 {
+    margin: 0;
+
+    font-size: 20px;
+    color: #34328a;
+  }
+
+  span {
+    color: #7b8194;
+    font-size: 13px;
+  }
+}
+
+.cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.task-card {
+  background: #ffffff;
+
+  mat-card-title {
+    font-size: 17px;
+  }
+
+  mat-card-content {
+    padding-top: 12px;
+
+    p {
+      margin-top: 0;
+
+      color: #555b6e;
+      line-height: 1.4;
+    }
+  }
+}
+
+.card-position {
+  color: #9399aa;
+  font-size: 12px;
+}
+
+.empty-column {
+  margin: 8px 0;
+
+  color: #9399aa;
+  font-style: italic;
+}
+
+@media (max-width: 700px) {
+
+  .board-page {
+    padding: 20px;
+  }
+
+  .board-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .kanban-column {
+    flex-basis: 280px;
+  }
+
+  .new-column-form {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+
+    mat-form-field {
+      width: 100%;
+    }
+  }
+}
+
+.new-column-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 28px;
+
+  mat-form-field {
+    width: 300px;
+  }
+}
+
+.new-card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  margin-bottom: 16px;
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  button {
+    align-self: flex-start;
+  }
+}

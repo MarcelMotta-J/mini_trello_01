@@ -7,6 +7,8 @@ import { Boards } from './boards/boards/boards';
 
 import { authGuard } from './core/guards/auth.guard';
 
+import { BoardDetails } from './boards/board-details/board-details';
+
 const routes: Routes = [
   {
     path: 'login',
@@ -15,6 +17,11 @@ const routes: Routes = [
   {
     path: 'boards',
     component: Boards,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'boards/:boardId',
+    component: BoardDetails,
     canActivate: [authGuard]
   },
   {
