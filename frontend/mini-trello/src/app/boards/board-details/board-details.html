@@ -134,6 +134,52 @@
 
         <mat-card appearance="outlined" class="task-card">
 
+
+          @if (editingCardId === card.id) {
+
+          <mat-card-content>
+
+            <mat-form-field appearance="outline">
+
+              <mat-label>Título</mat-label>
+
+              <input matInput type="text" [formControl]="editCardTitles[card.id]">
+
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+
+              <mat-label>Descrição</mat-label>
+
+              <textarea matInput rows="3" [formControl]="editCardDescriptions[card.id]"></textarea>
+
+            </mat-form-field>
+
+            <div class="edit-actions">
+
+              <button mat-stroked-button type="button" (click)="cancelEditCard()">
+                Cancelar
+              </button>
+
+              <button
+                mat-flat-button
+                type="button"
+                (click)="saveEditCard(column.id, card)"
+                [disabled]="updatingCardById[card.id]"
+              >
+                @if (updatingCardById[card.id]) {
+                  Salvando...
+                } @else {
+                  Salvar
+                }
+              </button>
+
+            </div>
+
+          </mat-card-content>
+
+          } @else {
+
           <mat-card-header>
 
             <mat-card-title>
@@ -156,9 +202,25 @@
               Position: {{ card.position }}
             </span>
 
+            <div class="card-actions">
+
+              <button mat-icon-button type="button" (click)="startEditCard(card)" aria-label="Editar card">
+
+                <mat-icon>
+                  edit
+                </mat-icon>
+
+              </button>
+
+            </div>
+
           </mat-card-content>
 
+          }
+
         </mat-card>
+
+
 
         } @empty {
 

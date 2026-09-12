@@ -16,6 +16,8 @@ import { CreateColumnRequest } from '../../columns/models/create-column-request'
 
 import { CreateCardRequest } from '../../cards/models/create-card-request';
 
+import { UpdateCardRequest } from '../../cards/models/update-card-request';
+
 @Component({
   selector: 'app-board-details',
   standalone: false,
@@ -49,6 +51,15 @@ export class BoardDetails implements OnInit {
   creatingCardByColumn: Record<string, boolean> = {};
 
   newCardDescriptions: Record<string, FormControl<string>> = {};
+
+
+  editingCardId: string | null = null;
+
+  editCardTitles: Record<string, FormControl<string>> = {};
+
+  editCardDescriptions: Record<string, FormControl<string>> = {};
+
+  updatingCardById: Record<string, boolean> = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -370,6 +381,127 @@ export class BoardDetails implements OnInit {
 
           console.error(
             'Erro ao criar card:',
+            error
+          );
+        }
+
+      });
+  }
+
+  startEditCard(card: Card): void {
+
+    this.editingCardId = card.id;
+
+    this.editCardTitles[card.id] = new FormControl(
+      card.title,
+      {
+        nonNullable: true,
+        validators: [
+          Validators.required
+        ]
+      }
+    );
+
+    this.editCardDescriptions[card.id] = new FormControl(
+      card.description,
+      {
+        nonNullable: true
+      }
+    );
+
+    this.updatingCardById[card.id] = false;
+  }
+
+  cancelEditCard(): void {
+    this.editingCardId = null;
+  }
+
+  saveEditCard(
+    columnId: string,
+    card: Card
+  ): void {
+
+    const titleControl =
+      this.editCardTitles[card.id];
+
+    const descriptionControl =
+      this.editCardDescriptions[card.id];
+
+    if (!titleControl || !descriptionControl) {
+      return;
+    }
+
+    if (this.updatingCardById[card.id]) {
+      return;
+    }
+
+    if (titleControl.invalid) {
+      titleControl.markAsTouched();
+      return;
+    }
+
+    const title =
+      titleControl.value.trim();
+
+    if (!title) {
+
+      titleControl.setErrors({
+        required: true
+      });
+
+      titleControl.markAsTouched();
+
+      return;
+    }
+
+    const description =
+      descriptionControl.value.trim();
+
+    const request: UpdateCardRequest = {
+      columnId,
+      title,
+      description,
+      position: card.position,
+      dueDate: card.dueDate
+    };
+
+    this.updatingCardById[card.id] = true;
+
+    this.cardService
+      .update(
+        this.boardId,
+        columnId,
+        card.id,
+        request
+      )
+      .subscribe({
+
+        next: updatedCard => {
+
+          this.cardsByColumn[columnId] =
+            this.cardsByColumn[columnId].map(
+              currentCard =>
+                currentCard.id === updatedCard.id
+                  ? updatedCard
+                  : currentCard
+            );
+
+          this.updatingCardById[card.id] = false;
+
+          this.editingCardId = null;
+
+          console.log(
+            'Card atualizado:',
+            updatedCard
+          );
+        },
+
+        error: error => {
+
+          this.updatingCardById[card.id] = false;
+
+          console.error(
+            'Erro ao atualizar card:',
             error
           );
         }

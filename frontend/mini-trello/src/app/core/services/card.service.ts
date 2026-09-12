@@ -7,6 +7,8 @@ import { API_ENDPOINTS } from '../api.config';
 
 import { CreateCardRequest } from '../../cards/models/create-card-request';
 
+import { UpdateCardRequest } from '../../cards/models/update-card-request';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -39,6 +41,23 @@ export class CardService {
       API_ENDPOINTS.CARDS(
         boardId,
         columnId
+      ),
+      request
+    );
+  }
+
+  update(
+    boardId: string,
+    columnId: string,
+    cardId: string,
+    request: UpdateCardRequest
+  ): Observable<Card> {
+
+    return this.http.put<Card>(
+      API_ENDPOINTS.CARD(
+        boardId,
+        columnId,
+        cardId
       ),
       request
     );
