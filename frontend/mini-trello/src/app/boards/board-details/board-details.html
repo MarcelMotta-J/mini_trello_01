@@ -125,14 +125,16 @@
 
       </div>
 
-      <div class="cards-list">
+      <div class="cards-list" cdkDropList 
+          [cdkDropListData]="cardsByColumn[column.id]"
+          (cdkDropListDropped)="dropCard($event, column.id)">
 
         @for (
         card of cardsByColumn[column.id];
         track card.id
         ) {
 
-        <mat-card appearance="outlined" class="task-card">
+        <mat-card appearance="outlined" class="task-card" cdkDrag >
 
 
           @if (editingCardId === card.id) {
@@ -204,18 +206,18 @@
 
                 <mat-icon>
                   edit
-                </mat-icon>               
+                </mat-icon>
 
               </button>
 
-               <button mat-icon-button type="button" (click)="deleteCard(column.id, card)"
-                  [disabled]="deletingCardById[card.id]" aria-label="Excluir card">
+              <button mat-icon-button type="button" (click)="deleteCard(column.id, card)"
+                [disabled]="deletingCardById[card.id]" aria-label="Excluir card">
 
-                  <mat-icon>
-                    delete
-                  </mat-icon>
+                <mat-icon>
+                  delete
+                </mat-icon>
 
-                </button>
+              </button>
 
             </div>
 

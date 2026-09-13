@@ -18,6 +18,11 @@ import { CreateCardRequest } from '../../cards/models/create-card-request';
 
 import { UpdateCardRequest } from '../../cards/models/update-card-request';
 
+import {
+  CdkDragDrop,
+  moveItemInArray
+} from '@angular/cdk/drag-drop';
+
 @Component({
   selector: 'app-board-details',
   standalone: false,
@@ -120,6 +125,9 @@ export class BoardDetails implements OnInit {
           );
 
           for (const column of this.columns) {
+
+            // segura drag e drop
+            this.cardsByColumn[column.id] = [];
 
             // Prepara o formulário de Novo Card
             // para cada Column que veio do backend.
@@ -567,5 +575,87 @@ export class BoardDetails implements OnInit {
       });
   }
 
+  dropCard(
+    event: CdkDragDrop<Card[]>,
+    columnId: string
+  ): void {
+
+    if (event.previousIndex === event.currentIndex) {
+      return;
+    }
+
+    const cards = [
+      ...this.cardsByColumn[columnId]
+    ];
+
+    const movedCard =
+      cards[event.previousIndex];
+
+    moveItemInArray(
+      cards,
+      event.previousIndex,
+      event.currentIndex
+    );
+
+    cards.forEach(
+      (card, index) => {
+        card.position = index;
+      }
+    );
+
+    this.cardsByColumn[columnId] = cards;
+
+    const request: UpdateCardRequest = {
+      columnId,
+      title: movedCard.title,
+      description: movedCard.description,
+      position: event.currentIndex,
+      dueDate: movedCard.dueDate
+    };
+
+    this.cardService
+      .update(
+        this.boardId,
+        columnId,
+        movedCard.id,
+        request
+      )
+      .subscribe({
+
+        next: updatedCard => {
+
+          console.log(
+            'Reorder persistido:',
+            updatedCard
+          );
+        },
+
+        error: error => {
+
+          console.error(
+            'Erro ao persistir reorder:',
+            error
+          );
+
+          // desfaz visualmente se o backend falhar
+          moveItemInArray(
+            cards,
+            event.currentIndex,
+            event.previousIndex
+          );
+
+          cards.forEach(
+            (card, index) => {
+              card.position = index;
+            }
+          );
+
+          this.cardsByColumn[columnId] = [
+            ...cards
+          ];
+        }
+
+      });
+  }
 
 }
