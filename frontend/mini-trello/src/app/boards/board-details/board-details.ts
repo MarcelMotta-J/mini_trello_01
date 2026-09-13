@@ -61,6 +61,8 @@ export class BoardDetails implements OnInit {
 
   updatingCardById: Record<string, boolean> = {};
 
+  deletingCardById: Record<string, boolean> = {};
+
   constructor(
     private route: ActivatedRoute,
     private boardService: BoardService,
@@ -502,6 +504,62 @@ export class BoardDetails implements OnInit {
 
           console.error(
             'Erro ao atualizar card:',
+            error
+          );
+        }
+
+      });
+  }
+
+  deleteCard(
+    columnId: string,
+    card: Card
+  ): void {
+
+    const confirmed = window.confirm(
+      `Excluir o card "${card.title}"?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    if (this.deletingCardById[card.id]) {
+      return;
+    }
+
+    this.deletingCardById[card.id] = true;
+
+    this.cardService
+      .delete(
+        this.boardId,
+        columnId,
+        card.id
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.cardsByColumn[columnId] =
+            this.cardsByColumn[columnId].filter(
+              currentCard =>
+                currentCard.id !== card.id
+            );
+
+          this.deletingCardById[card.id] = false;
+
+          console.log(
+            'Card excluído:',
+            card.id
+          );
+        },
+
+        error: error => {
+
+          this.deletingCardById[card.id] = false;
+
+          console.error(
+            'Erro ao excluir card:',
             error
           );
         }

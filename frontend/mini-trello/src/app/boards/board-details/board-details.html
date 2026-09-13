@@ -161,16 +161,12 @@
                 Cancelar
               </button>
 
-              <button
-                mat-flat-button
-                type="button"
-                (click)="saveEditCard(column.id, card)"
-                [disabled]="updatingCardById[card.id]"
-              >
+              <button mat-flat-button type="button" (click)="saveEditCard(column.id, card)"
+                [disabled]="updatingCardById[card.id]">
                 @if (updatingCardById[card.id]) {
-                  Salvando...
+                Salvando...
                 } @else {
-                  Salvar
+                Salvar
                 }
               </button>
 
@@ -208,9 +204,18 @@
 
                 <mat-icon>
                   edit
-                </mat-icon>
+                </mat-icon>               
 
               </button>
+
+               <button mat-icon-button type="button" (click)="deleteCard(column.id, card)"
+                  [disabled]="deletingCardById[card.id]" aria-label="Excluir card">
+
+                  <mat-icon>
+                    delete
+                  </mat-icon>
+
+                </button>
 
             </div>
 

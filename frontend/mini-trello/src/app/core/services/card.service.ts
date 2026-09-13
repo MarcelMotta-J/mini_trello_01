@@ -62,4 +62,19 @@ export class CardService {
       request
     );
   }
+
+  delete(
+    boardId: string,
+    columnId: string,
+    cardId: string
+  ): Observable<void> {
+
+    return this.http.delete<void>(
+      API_ENDPOINTS.CARD(
+        boardId,
+        columnId,
+        cardId
+      )
+    );
+  }
 }
