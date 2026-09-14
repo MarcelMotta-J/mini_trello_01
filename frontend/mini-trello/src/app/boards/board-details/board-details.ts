@@ -606,6 +606,15 @@ export class BoardDetails implements OnInit {
     const sourceColumnId =
       movedCard.columnId;
 
+    // Snapshot para rollback em caso de erro no backend.
+    const originalSourceCards =
+      sourceCards.map(card => ({ ...card }));
+
+    const originalTargetCards =
+      sameColumn
+        ? originalSourceCards
+        : targetCards.map(card => ({ ...card }));
+
     if (sameColumn) {
 
       moveItemInArray(
@@ -688,8 +697,23 @@ export class BoardDetails implements OnInit {
             error
           );
 
-          // mais adiante melhoramos o rollback
-          // entre Columns se necessário
+          if (sameColumn) {
+
+            this.cardsByColumn[sourceColumnId] =
+              originalSourceCards;
+
+          } else {
+
+            this.cardsByColumn[sourceColumnId] =
+              originalSourceCards;
+
+            this.cardsByColumn[targetColumnId] =
+              originalTargetCards;
+          }
+
+          console.log(
+            'Rollback do drag and drop realizado.'
+          );
         }
 
       });
