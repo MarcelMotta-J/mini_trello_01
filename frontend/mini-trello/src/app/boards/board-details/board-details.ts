@@ -20,7 +20,8 @@ import { UpdateCardRequest } from '../../cards/models/update-card-request';
 
 import {
   CdkDragDrop,
-  moveItemInArray
+  moveItemInArray,
+  transferArrayItem
 } from '@angular/cdk/drag-drop';
 
 @Component({
@@ -126,7 +127,8 @@ export class BoardDetails implements OnInit {
 
           for (const column of this.columns) {
 
-            // segura drag e drop
+            // Inicializa a lista para evitar undefined
+            // enquanto os Cards ainda estão sendo carregados.
             this.cardsByColumn[column.id] = [];
 
             // Prepara o formulário de Novo Card
@@ -577,36 +579,83 @@ export class BoardDetails implements OnInit {
 
   dropCard(
     event: CdkDragDrop<Card[]>,
-    columnId: string
+    targetColumnId: string
   ): void {
 
-    if (event.previousIndex === event.currentIndex) {
+    const sameColumn =
+      event.previousContainer === event.container;
+
+    if (
+      sameColumn &&
+      event.previousIndex === event.currentIndex
+    ) {
       return;
     }
 
-    const cards = [
-      ...this.cardsByColumn[columnId]
+    const sourceCards = [
+      ...event.previousContainer.data
     ];
 
+    const targetCards = sameColumn
+      ? sourceCards
+      : [...event.container.data];
+
     const movedCard =
-      cards[event.previousIndex];
+      sourceCards[event.previousIndex];
 
-    moveItemInArray(
-      cards,
-      event.previousIndex,
-      event.currentIndex
-    );
+    const sourceColumnId =
+      movedCard.columnId;
 
-    cards.forEach(
-      (card, index) => {
-        card.position = index;
-      }
-    );
+    if (sameColumn) {
 
-    this.cardsByColumn[columnId] = cards;
+      moveItemInArray(
+        sourceCards,
+        event.previousIndex,
+        event.currentIndex
+      );
+
+      sourceCards.forEach(
+        (card, index) => {
+          card.position = index;
+        }
+      );
+
+      this.cardsByColumn[targetColumnId] =
+        sourceCards;
+
+    } else {
+
+      transferArrayItem(
+        sourceCards,
+        targetCards,
+        event.previousIndex,
+        event.currentIndex
+      );
+
+      sourceCards.forEach(
+        (card, index) => {
+          card.position = index;
+        }
+      );
+
+      targetCards.forEach(
+        (card, index) => {
+          card.position = index;
+        }
+      );
+
+      movedCard.columnId =
+        targetColumnId;
+
+      this.cardsByColumn[sourceColumnId] =
+        sourceCards;
+
+      this.cardsByColumn[targetColumnId] =
+        targetCards;
+    }
 
     const request: UpdateCardRequest = {
-      columnId,
+      columnId: targetColumnId,
       title: movedCard.title,
       description: movedCard.description,
       position: event.currentIndex,
@@ -616,16 +665,18 @@ export class BoardDetails implements OnInit {
     this.cardService
       .update(
         this.boardId,
-        columnId,
+        sourceColumnId, // Column atual no endpoint
         movedCard.id,
-        request
+        request         // request.columnId = destino
       )
       .subscribe({
 
         next: updatedCard => {
 
           console.log(
-            'Reorder persistido:',
+            sameColumn
+              ? 'Reorder persistido:'
+              : 'Move entre columns persistido:',
             updatedCard
           );
         },
@@ -633,29 +684,14 @@ export class BoardDetails implements OnInit {
         error: error => {
 
           console.error(
-            'Erro ao persistir reorder:',
+            'Erro ao persistir drag and drop:',
             error
           );
 
-          // desfaz visualmente se o backend falhar
-          moveItemInArray(
-            cards,
-            event.currentIndex,
-            event.previousIndex
-          );
-
-          cards.forEach(
-            (card, index) => {
-              card.position = index;
-            }
-          );
-
-          this.cardsByColumn[columnId] = [
-            ...cards
-          ];
+          // mais adiante melhoramos o rollback
+          // entre Columns se necessário
         }
 
       });
   }
-
 }
