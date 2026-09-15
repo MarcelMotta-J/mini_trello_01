@@ -59,7 +59,7 @@
 
   </div>
 
-  <main class="kanban"  cdkDropListGroup>
+  <main class="kanban" cdkDropListGroup>
 
     @for (column of columns; track column.id) {
 
@@ -125,16 +125,15 @@
 
       </div>
 
-      <div class="cards-list" cdkDropList 
-          [cdkDropListData]="cardsByColumn[column.id]"
-          (cdkDropListDropped)="dropCard($event, column.id)">
+      <div class="cards-list" cdkDropList [cdkDropListData]="cardsByColumn[column.id]"
+        (cdkDropListDropped)="dropCard($event, column.id)">
 
         @for (
         card of cardsByColumn[column.id];
         track card.id
         ) {
 
-        <mat-card appearance="outlined" class="task-card" cdkDrag >
+        <mat-card appearance="outlined" class="task-card" cdkDrag>
 
 
           @if (editingCardId === card.id) {
@@ -183,6 +182,14 @@
             <mat-card-title>
               {{ card.title }}
             </mat-card-title>
+
+            <button mat-icon-button type="button" cdkDragHandle class="drag-handle" aria-label="Mover card">
+
+              <mat-icon>
+                drag_indicator
+              </mat-icon>
+
+            </button>
 
           </mat-card-header>
 
