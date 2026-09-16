@@ -183,11 +183,22 @@
               {{ card.title }}
             </mat-card-title>
 
-            <button mat-icon-button type="button" cdkDragHandle class="drag-handle" aria-label="Mover card">
+            <button mat-icon-button type="button" cdkDragHandle class="drag-handle" [disabled]="savingCardById[card.id]"
+              aria-label="Mover card">
+
+              @if (savingCardById[card.id]) {
+
+              <mat-icon>
+                sync
+              </mat-icon>
+
+              } @else {
 
               <mat-icon>
                 drag_indicator
               </mat-icon>
+
+              }
 
             </button>
 

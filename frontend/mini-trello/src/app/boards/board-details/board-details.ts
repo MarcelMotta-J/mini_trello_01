@@ -24,6 +24,8 @@ import {
   transferArrayItem
 } from '@angular/cdk/drag-drop';
 
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 @Component({
   selector: 'app-board-details',
   standalone: false,
@@ -69,11 +71,14 @@ export class BoardDetails implements OnInit {
 
   deletingCardById: Record<string, boolean> = {};
 
+  savingCardById: Record<string, boolean> = {};
+
   constructor(
     private route: ActivatedRoute,
     private boardService: BoardService,
     private columnService: ColumnService,
-    private cardService: CardService
+    private cardService: CardService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -671,6 +676,8 @@ export class BoardDetails implements OnInit {
       dueDate: movedCard.dueDate
     };
 
+    this.savingCardById[movedCard.id] = true;
+
     this.cardService
       .update(
         this.boardId,
@@ -682,11 +689,24 @@ export class BoardDetails implements OnInit {
 
         next: updatedCard => {
 
+          this.savingCardById[movedCard.id] = false;
+
           console.log(
             sameColumn
               ? 'Reorder persistido:'
               : 'Move entre columns persistido:',
             updatedCard
+          );
+
+          this.snackBar.open(
+            sameColumn
+              ? 'Ordem do card salva.'
+              : 'Card movido com sucesso.',
+            'Fechar',
+            {
+              duration: 3000,
+              panelClass: ['snackbar-success']
+            }
           );
         },
 
@@ -711,8 +731,19 @@ export class BoardDetails implements OnInit {
               originalTargetCards;
           }
 
+          this.savingCardById[movedCard.id] = false;
+
           console.log(
             'Rollback do drag and drop realizado.'
+          );
+
+          this.snackBar.open(
+            'Não foi possível salvar o movimento.',
+            'Fechar',
+            {
+              duration: 4000,
+              panelClass: ['snackbar-error']
+            }
           );
         }
 

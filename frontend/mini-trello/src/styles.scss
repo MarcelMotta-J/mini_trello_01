@@ -37,3 +37,15 @@ body {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.snackbar-error {
+  --mat-snack-bar-container-color: #b3261e;
+  --mat-snack-bar-supporting-text-color: white;
+  --mat-snack-bar-button-color: white;
+}
+
+.snackbar-success {
+  --mat-snack-bar-container-color: #2e7d32;
+  --mat-snack-bar-supporting-text-color: white;
+  --mat-snack-bar-button-color: white;
+}

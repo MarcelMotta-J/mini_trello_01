@@ -22,6 +22,8 @@ import { BoardDetails } from './boards/board-details/board-details';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 
 @NgModule({
   declarations: [
@@ -40,7 +42,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    DragDropModule
+    DragDropModule,
+    MatSnackBarModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

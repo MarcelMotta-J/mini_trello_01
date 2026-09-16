@@ -67,7 +67,8 @@ export class CardService {
  * TESTE MANUAL DE ROLLBACK DO DRAG & DROP
  *
  * Adicionar temporariamente '/erro-teste' à URL do método update()
- * para provocar HTTP 404 e validar o rollback visual.
+ *  - para provocar HTTP 404 e validar o rollback visual.
+ *  - para provocar Snackbar de erro ao mover card
  *
  * return this.http.put<Card>(
  *   API_ENDPOINTS.CARD(
