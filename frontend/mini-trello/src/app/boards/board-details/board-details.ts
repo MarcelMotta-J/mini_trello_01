@@ -60,12 +60,15 @@ export class BoardDetails implements OnInit {
 
   newCardDescriptions: Record<string, FormControl<string>> = {};
 
+  newCardDueDates: Record<string, FormControl<string>> = {};
 
   editingCardId: string | null = null;
 
   editCardTitles: Record<string, FormControl<string>> = {};
 
   editCardDescriptions: Record<string, FormControl<string>> = {};
+
+  editCardDueDates: Record<string, FormControl<string>> = {};
 
   updatingCardById: Record<string, boolean> = {};
 
@@ -149,6 +152,13 @@ export class BoardDetails implements OnInit {
             );
 
             this.newCardDescriptions[column.id] = new FormControl(
+              '',
+              {
+                nonNullable: true
+              }
+            );
+
+            this.newCardDueDates[column.id] = new FormControl(
               '',
               {
                 nonNullable: true
@@ -309,11 +319,18 @@ export class BoardDetails implements OnInit {
     const descriptionControl =
       this.newCardDescriptions[columnId];
 
+    const dueDateControl =
+      this.newCardDueDates[columnId];
+
     if (!control) {
       return;
     }
 
     if (!descriptionControl) {
+      return;
+    }
+
+    if (!dueDateControl) {
       return;
     }
 
@@ -330,6 +347,16 @@ export class BoardDetails implements OnInit {
 
     const description =
       descriptionControl.value.trim();
+
+    const dueDateValue =
+      dueDateControl.value.trim();
+
+    const dueDate =
+      dueDateValue
+        ? new Date(
+          `${dueDateValue}T00:00:00.000Z`
+        ).toISOString()
+        : null;
 
     if (!title) {
 
@@ -358,7 +385,7 @@ export class BoardDetails implements OnInit {
       title,
       description,
       position: nextPosition,
-      dueDate: null
+      dueDate
     };
 
     this.creatingCardByColumn[columnId] = true;
@@ -383,6 +410,8 @@ export class BoardDetails implements OnInit {
           control.reset();
 
           descriptionControl.reset();
+
+          dueDateControl.reset();
 
           this.creatingCardByColumn[columnId] = false;
 
@@ -426,6 +455,15 @@ export class BoardDetails implements OnInit {
       }
     );
 
+    this.editCardDueDates[card.id] = new FormControl(
+      card.dueDate
+        ? card.dueDate.substring(0, 10)
+        : '',
+      {
+        nonNullable: true
+      }
+    );
+
     this.updatingCardById[card.id] = false;
   }
 
@@ -444,7 +482,14 @@ export class BoardDetails implements OnInit {
     const descriptionControl =
       this.editCardDescriptions[card.id];
 
-    if (!titleControl || !descriptionControl) {
+    const dueDateControl =
+      this.editCardDueDates[card.id];
+
+    if (
+      !titleControl ||
+      !descriptionControl ||
+      !dueDateControl
+    ) {
       return;
     }
 
@@ -474,12 +519,22 @@ export class BoardDetails implements OnInit {
     const description =
       descriptionControl.value.trim();
 
+    const dueDateValue =
+      dueDateControl.value.trim();
+
+    const dueDate =
+      dueDateValue
+        ? new Date(
+          `${dueDateValue}T00:00:00.000Z`
+        ).toISOString()
+        : null;
+
     const request: UpdateCardRequest = {
       columnId,
       title,
       description,
       position: card.position,
-      dueDate: card.dueDate
+      dueDate
     };
 
     this.updatingCardById[card.id] = true;
