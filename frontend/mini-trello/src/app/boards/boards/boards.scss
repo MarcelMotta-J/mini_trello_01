@@ -15,10 +15,16 @@
   align-items: center;
   gap: 24px;
 
+  > div:first-child {
+    min-width: 210px;
+    flex-shrink: 0;
+  }
+
   h1 {
     margin: 0;
     font-size: 2rem;
     color: #2f2d75;
+    white-space: nowrap;
   }
 
   p {
@@ -144,4 +150,62 @@
   mat-form-field {
     width: 280px;
   }
+}
+
+.user-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 10px 14px;
+
+  background: #ffffff;
+
+  border: 1px solid #d9ddf5;
+  border-radius: 14px;
+
+  box-shadow:
+    0 6px 18px rgba(47, 45, 117, 0.08);
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #ffffff;
+  background: #5b57c7;
+
+  border-radius: 50%;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.user-label {
+  font-size: 0.75rem;
+  color: #667085;
+}
+
+.user-email {
+  max-width: 220px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  font-size: 0.9rem;
+  color: #2f2d75;
+}
+
+.logout-button {
+  margin-left: 4px;
 }

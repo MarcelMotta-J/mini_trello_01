@@ -55,15 +55,37 @@
 
   </button>
 
-  <button mat-stroked-button type="button" (click)="logout()">
+  <div class="user-box">
 
-    <mat-icon>
-      logout
-    </mat-icon>
+    <div class="user-avatar">
+      <mat-icon>
+        person
+      </mat-icon>
+    </div>
 
-    Sair
+    <div class="user-info">
 
-  </button>
+      <span class="user-label">
+        Usuário conectado
+      </span>
+
+      <strong class="user-email">
+        {{ loggedUserEmail }}
+      </strong>
+
+    </div>
+
+    <button mat-stroked-button type="button" class="logout-button" (click)="logout()">
+
+      <mat-icon>
+        logout
+      </mat-icon>
+
+      Sair
+
+    </button>
+
+  </div>
 
 </header>
 

@@ -28,6 +28,8 @@ export class Boards implements OnInit {
 
   creatingBoard = false;
 
+  loggedUserEmail: string | null = null;
+
   constructor(
     private boardService: BoardService,
     private authService: AuthService,
@@ -35,6 +37,8 @@ export class Boards implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+    this.loggedUserEmail = this.authService.getEmail();
 
     this.boardService
       .findAll()
