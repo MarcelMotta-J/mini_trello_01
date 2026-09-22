@@ -60,7 +60,7 @@ export class BoardDetails implements OnInit {
 
   newCardDescriptions: Record<string, FormControl<string>> = {};
 
-  newCardDueDates: Record<string, FormControl<string>> = {};
+  newCardDueDates: Record<string, FormControl<Date | null>> = {};
 
   editingCardId: string | null = null;
 
@@ -68,7 +68,7 @@ export class BoardDetails implements OnInit {
 
   editCardDescriptions: Record<string, FormControl<string>> = {};
 
-  editCardDueDates: Record<string, FormControl<string>> = {};
+  editCardDueDates: Record<string, FormControl<Date | null>> = {};
 
   updatingCardById: Record<string, boolean> = {};
 
@@ -158,12 +158,8 @@ export class BoardDetails implements OnInit {
               }
             );
 
-            this.newCardDueDates[column.id] = new FormControl(
-              '',
-              {
-                nonNullable: true
-              }
-            );
+            this.newCardDueDates[column.id] =
+              new FormControl<Date | null>(null);
 
             this.creatingCardByColumn[column.id] = false;
 
@@ -349,12 +345,16 @@ export class BoardDetails implements OnInit {
       descriptionControl.value.trim();
 
     const dueDateValue =
-      dueDateControl.value.trim();
+      dueDateControl.value;
 
     const dueDate =
       dueDateValue
         ? new Date(
-          `${dueDateValue}T00:00:00.000Z`
+          Date.UTC(
+            dueDateValue.getFullYear(),
+            dueDateValue.getMonth(),
+            dueDateValue.getDate()
+          )
         ).toISOString()
         : null;
 
@@ -455,14 +455,12 @@ export class BoardDetails implements OnInit {
       }
     );
 
-    this.editCardDueDates[card.id] = new FormControl(
-      card.dueDate
-        ? card.dueDate.substring(0, 10)
-        : '',
-      {
-        nonNullable: true
-      }
-    );
+    this.editCardDueDates[card.id] =
+      new FormControl<Date | null>(
+        card.dueDate
+          ? new Date(card.dueDate)
+          : null
+      );
 
     this.updatingCardById[card.id] = false;
   }
@@ -520,12 +518,16 @@ export class BoardDetails implements OnInit {
       descriptionControl.value.trim();
 
     const dueDateValue =
-      dueDateControl.value.trim();
+      dueDateControl.value;
 
     const dueDate =
       dueDateValue
         ? new Date(
-          `${dueDateValue}T00:00:00.000Z`
+          Date.UTC(
+            dueDateValue.getFullYear(),
+            dueDateValue.getMonth(),
+            dueDateValue.getDate()
+          )
         ).toISOString()
         : null;
 

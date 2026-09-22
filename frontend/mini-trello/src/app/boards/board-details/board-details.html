@@ -111,7 +111,13 @@
 
           <mat-label>Data de vencimento</mat-label>
 
-          <input matInput type="date" [formControl]="newCardDueDates[column.id]">
+          <input matInput [matDatepicker]="newCardPicker" [formControl]="newCardDueDates[column.id]">
+
+          <mat-datepicker-toggle matIconSuffix [for]="newCardPicker">
+          </mat-datepicker-toggle>
+
+          <mat-datepicker #newCardPicker>
+          </mat-datepicker>
 
         </mat-form-field>
 
@@ -167,7 +173,13 @@
 
               <mat-label>Data de vencimento</mat-label>
 
-              <input matInput type="date" [formControl]="editCardDueDates[card.id]">
+              <input matInput [matDatepicker]="editCardPicker" [formControl]="editCardDueDates[card.id]">
+
+              <mat-datepicker-toggle matIconSuffix [for]="editCardPicker">
+              </mat-datepicker-toggle>
+
+              <mat-datepicker #editCardPicker>
+              </mat-datepicker>
 
             </mat-form-field>
 

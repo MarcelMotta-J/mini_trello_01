@@ -24,6 +24,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatIconModule,
     MatCardModule,
     DragDropModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
