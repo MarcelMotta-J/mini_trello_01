@@ -60,7 +60,7 @@ register() {
 
 
 login() {
-    local email="${1:-admin@teste.com}"
+    local email="${1:-panthro@teste.com}"
 
     read -s -p "Password for $email: " password
     echo
